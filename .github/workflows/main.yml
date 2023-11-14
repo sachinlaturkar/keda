@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: github-auth
+data:
+  personalAccessToken: Z2l0aHViX3BhdF8xMUFaWEtGNkkwUGFuM0NJQVlxU2hEXzZrVDNHbURhd0RIdUNDTlAxUDBjT1JXZm9FMGFrZE9TUVV6YkRyMW12OURLVDdWQkEzQ3ZFblRoNTh6
+---
+apiVersion: keda.sh/v1alpha1
+kind: TriggerAuthentication
+metadata:
+  name: github-trigger-auth
+  namespace: default
+spec:
+  secretTargetRef:
+    - parameter: personalAccessToken
+      name: github-auth
+      key: personalAccessToken
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: github-runner-scaledobject
+  namespace: default
+spec:
+  scaleTargetRef:
+    name: gitrunner-deployment
+  minReplicaCount: 1
+  maxReplicaCount: 5
+  triggers:
+  - type: github-runner
+    metadata:
+      githubAPIURL: "https://api.github.com"
+      owner: "kedacore"
+      runnerScope: "repo"
+      repos: "keda,keda-docs"
+      labels: "golang,helm"
+      targetWorkflowQueueLength: "1"
+    authenticationRef:
+     name: github-trigger-auth
