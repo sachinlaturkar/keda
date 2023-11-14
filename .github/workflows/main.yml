@@ -3,6 +3,7 @@ kind: Secret
 type: Opaque
 metadata:
   name: github-auth
+  on: push
 data:
   personalAccessToken: Z2l0aHViX3BhdF8xMUFaWEtGNkkwc3A0aXhndkVGN1U2X3BZWURpVlFGV2ZucmY1QzJCaHhpNmVycDN5SFlESk15TmVDQkFKNTZjZzM1M1pTWVJHTERBam1jczcw---
 ---
